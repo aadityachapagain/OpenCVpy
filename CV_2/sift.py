@@ -18,7 +18,7 @@ def process_image(imagename, resultname, params="--edge-thresh 10 --peak-thresh 
         im.save('tmp.pgm')
         imagename = 'tmp.pgm'
 
-    cmmd = str("sift " + imagename + " --output " + resultname + " " + params)
+    cmmd = str("sift " + imagename + " −−descriptors=" + resultname + " " + params)
     system(cmmd)
     print ('processed', imagename, 'to', resultname)
 
