@@ -83,3 +83,17 @@ def match(desc1,desc2):
         if arccos(dotprods)[indx[0]] < dist_ratio * arccos(dotprods)[indx[1]]:
             matchscores[i] = int(indx[0])
     return matchscores
+
+def match_twosided(desc1,desc2):
+    """ Two-sided symmetric version of match(). """
+
+    matches_12 = match(desc1,desc2)
+    matches_21 = match(desc2,desc1)
+    ndx_12 = matches_12.nonzero()[0]
+
+    # remove matches that are not symmetric
+    for n in ndx_12:
+        if matches_21[int(matches_12[n])] != n:
+            matches_12[n] = 0
+
+    return matches_12
