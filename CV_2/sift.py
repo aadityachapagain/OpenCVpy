@@ -1,6 +1,7 @@
 from os import system
 from PIL import Image
-from numpy import loadtxt, savetxt, hstack, arange, cos, sin, pi
+from numpy import loadtxt, savetxt, hstack, arange, cos, sin, pi,linalg,argsort, zeros, arccos,dot
+import numpy as np
 from matplotlib import pyplot as plt
 
 
@@ -57,3 +58,28 @@ def plot_features(im,locs,circle=False):
         plt.plot(locs[:, 0], locs[:, 1],'ob')
 
     plt.axis('off')
+
+
+def match(desc1,desc2):
+    """ For each descriptor in the first image,
+    select its match in the second image.
+    input: desc1 (descriptors for the first image),
+    desc2 (same for second image). """
+    desc1 = np.array([d/linalg.norm(d) for d in desc1])
+    desc2 = np.array([d/linalg.norm(d) for d in desc2])
+    dist_ratio = 0.6
+    desc1_size = desc1.shape
+    matchscores = zeros((desc1_size[0],1),'int')
+    desc2t = desc2.T # precompute matrix transpose
+    for i in range(desc1_size[0]):
+        dotprods = dot(desc1[i,:],desc2t) # vector of dot products
+        dotprods = 0.9999*dotprods
+
+        # inverse cosine and sort, return index for features in second image
+        indx = argsort(arccos(dotprods))
+
+        # check if nearest neighbor has angle less than dist_ratio times 2nd
+
+        if arccos(dotprods)[indx[0]] < dist_ratio * arccos(dotprods)[indx[1]]:
+            matchscores[i] = int(indx[0])
+    return matchscores
