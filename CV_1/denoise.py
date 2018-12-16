@@ -11,7 +11,7 @@ from os import listdir, getcwd ,path
 import ROF
 from PIL import Image
 
-image = 'kremlin.jpg'
+image = 'rome.jpg'
 loc = '../data/'
 
 
