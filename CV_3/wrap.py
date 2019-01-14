@@ -1,6 +1,7 @@
 from CV_3 import homography
 from scipy import ndimage
 import numpy as np
+from matplotlib.tri import Triangulation
 # used to wrap one image inside another image
 
 
@@ -32,3 +33,15 @@ def alpha_for_triangle(points,m,n):
             if min(x) > 0: #all coefficients positive
                 alpha[i,j] = 1
     return alpha
+
+
+def triangulate_points(x,y):
+    """
+
+    :param x: set of points in x axis
+    :param y: set of points in y axis
+    :return: trangular set of points
+    """
+
+    tris = Triangulation(x,y)
+    return tris
