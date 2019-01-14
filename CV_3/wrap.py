@@ -45,3 +45,39 @@ def triangulate_points(x,y):
 
     tris = Triangulation(x,y)
     return tris
+
+
+def pw_affine(fromim,toim,fp,tp,tri):
+
+    """ Warp triangular patches from an image.
+    fromim = image to warp
+    toim = destination image
+    fp = from points in hom. coordinates
+    tp = to points in hom. coordinates
+    tri = triangulation. """
+
+    im = toim.copy()
+
+    # check if image is grayscale or color
+    is_color = len(fromim.shape) == 3
+
+    # create image to warp to (needed if iterate colors)
+    im_t = np.zeros(im.shape, 'uint8')
+    for t in tri:
+
+        # compute affine transformation
+        H = homography.Haffine_from_points(tp[:,t],fp[:,t])
+
+        if is_color:
+            for col in range(fromim.shape[2]):
+                im_t[:,:,col] = ndimage.affine_transform(fromim[:,:,col],H[:2,:2],(H[0,2],H[1,2]),im.shape[:2])
+        else:
+            im_t = ndimage.affine_transform(fromim,H[:2,:2],(H[0,2],H[1,2]),im.shape[:2])
+
+        # alpha for triangle
+        alpha = alpha_for_triangle(tp[:,t],im.shape[0],im.shape[1])
+
+        # add triangle to image
+        im[alpha>0] = im_t[alpha>0]
+
+    return im
