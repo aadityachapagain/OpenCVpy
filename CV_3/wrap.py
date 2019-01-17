@@ -2,6 +2,7 @@ from CV_3 import homography
 from scipy import ndimage
 import numpy as np
 from matplotlib.tri import Triangulation
+from pylab import *
 # used to wrap one image inside another image
 
 
@@ -81,3 +82,10 @@ def pw_affine(fromim,toim,fp,tp,tri):
         im[alpha>0] = im_t[alpha>0]
 
     return im
+
+
+def plot_mesh(x,y,tri):
+    """ Plot triangles. """
+    for t in tri:
+        t_ext = [t[0], t[1], t[2], t[0]] # add first point to end
+        plot(x[t_ext],y[t_ext],'r')
